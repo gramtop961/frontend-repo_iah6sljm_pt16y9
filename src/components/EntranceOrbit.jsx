@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useTransform } from 'framer-motion'
+import Spline from '@splinetool/react-spline'
 
 export default function EntranceOrbit({ onEnter }) {
   const [ready, setReady] = useState(false)
@@ -60,9 +61,21 @@ export default function EntranceOrbit({ onEnter }) {
 
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-black text-white">
+      {/* 3D hero (non-blocking) */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 opacity-60 pointer-events-none">
+          <Spline scene="https://prod.spline.design/95Gu7tsx2K-0F3oi/scene.splinecode" style={{ width: '100%', height: '100%' }} />
+        </div>
+        {/* soft vignette */}
+        <div className="pointer-events-none absolute inset-0" style={{
+          background:
+            'radial-gradient(circle at 50% 55%, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.0) 35%, rgba(0,0,0,0.35) 100%)',
+        }} />
+      </div>
+
       <motion.div
         style={{ rotateX, rotateY }}
-        className="absolute inset-0 z-10 flex items-center justify-center"
+        className="absolute inset-0 z-20 flex items-center justify-center"
      >
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
@@ -103,7 +116,7 @@ export default function EntranceOrbit({ onEnter }) {
       </motion.div>
 
       {/* Subtle floating particles (non-blocking) */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden z-0">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden z-10">
         {[...Array(24)].map((_, i) => (
           <motion.span
             key={i}
