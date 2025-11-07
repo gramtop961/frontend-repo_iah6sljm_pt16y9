@@ -56,23 +56,33 @@ export default function EntranceOrbit({ onEnter }) {
     // Slight cinematic fade, then advance
     window.setTimeout(() => {
       if (typeof onEnter === 'function') onEnter()
-    }, 400)
+    }, 500)
   }
 
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-black text-white">
       {/* 3D hero (non-blocking) */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 opacity-60 pointer-events-none">
+        {/* Spline scene */}
+        <div className="absolute inset-0 opacity-80 pointer-events-none">
           <Spline scene="https://prod.spline.design/95Gu7tsx2K-0F3oi/scene.splinecode" style={{ width: '100%', height: '100%' }} />
         </div>
-        {/* soft vignette */}
+        {/* cinematic color wash */}
         <div className="pointer-events-none absolute inset-0" style={{
           background:
-            'radial-gradient(circle at 50% 55%, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.0) 35%, rgba(0,0,0,0.35) 100%)',
+            'radial-gradient(circle at 50% 55%, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.0) 35%, rgba(0,0,0,0.4) 100%)',
         }} />
+        {/* letterbox bars */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/80 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/80 to-transparent" />
+        {/* soft chromatic flares */}
+        <div className="pointer-events-none absolute inset-0 mix-blend-screen">
+          <div className="absolute -left-24 top-1/3 h-64 w-64 rounded-full blur-3xl bg-sky-400/10" />
+          <div className="absolute -right-24 bottom-1/4 h-72 w-72 rounded-full blur-3xl bg-fuchsia-400/10" />
+        </div>
       </div>
 
+      {/* Title + CTA */}
       <motion.div
         style={{ rotateX, rotateY }}
         className="absolute inset-0 z-20 flex items-center justify-center"
@@ -85,7 +95,7 @@ export default function EntranceOrbit({ onEnter }) {
         >
           <motion.div style={{ x: translate }} className="select-none tracking-tight">
             <h1
-              className="text-5xl md:text-7xl font-semibold"
+              className="text-5xl md:text-7xl font-semibold drop-shadow-[0_6px_30px_rgba(0,0,0,0.6)]"
               style={{ fontFamily: 'IBM Plex Sans, Inter, system-ui' }}
             >
               <span className="opacity-90">L.</span> Caamaño
@@ -104,25 +114,23 @@ export default function EntranceOrbit({ onEnter }) {
           <motion.button
             type="button"
             onClick={handleEnter}
-            whileHover={{ scale: 1.04 }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
-            className={`mt-2 rounded-full border border-zinc-700/70 bg-zinc-900/50 px-6 py-3 text-sm transition backdrop-blur-sm hover:bg-zinc-800/60 md:text-base ${
-              ready ? 'pointer-events-none' : ''
-            }`}
+            className={`${ready ? 'pointer-events-none' : ''} mt-2 rounded-full border border-zinc-700/70 bg-zinc-900/60 px-7 py-3 text-sm md:text-base transition backdrop-blur-md hover:bg-zinc-800/70`}
           >
             Enter
           </motion.button>
         </motion.div>
       </motion.div>
 
-      {/* Subtle floating particles (non-blocking) */}
+      {/* Floating particles (non-blocking) */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden z-10">
-        {[...Array(24)].map((_, i) => (
+        {[...Array(36)].map((_, i) => (
           <motion.span
             key={i}
-            className="absolute h-1 w-1 rounded-full bg-white/30"
+            className="absolute h-1 w-1 rounded-full bg-white/40"
             initial={{ opacity: 0, y: Math.random() * 600, x: Math.random() * 1200 }}
-            animate={{ opacity: [0.1, 0.5, 0.1], y: ['0%', '-10%', '0%'] }}
+            animate={{ opacity: [0.15, 0.6, 0.15], y: ['0%', '-14%', '0%'] }}
             transition={{
               duration: 6 + Math.random() * 8,
               repeat: Infinity,
@@ -134,11 +142,19 @@ export default function EntranceOrbit({ onEnter }) {
         ))}
       </div>
 
+      {/* sweep highlight */}
+      <motion.div
+        initial={{ x: '-30%' }}
+        animate={{ x: '130%' }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        className="pointer-events-none absolute inset-y-0 w-1/6 bg-gradient-to-r from-transparent via-white/4 to-transparent"
+      />
+
       {/* Fade overlay when entering (non-blocking) */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: ready ? 1 : 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.5 }}
         className="pointer-events-none absolute inset-0 bg-black"
       />
     </div>
